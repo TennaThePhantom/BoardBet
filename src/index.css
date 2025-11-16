@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+.font-galada {
+	font-family: "Galada", cursive;
+	font-weight: 400;
+	font-style: normal;
+}
+
+.font-racing-sans-one {
+	font-family: "Racing Sans One", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+}
+
+@layer components {
+	.font-galada {
+		font-family: "Galada", cursive;
+		font-weight: 400;
+		font-style: normal;
+	}
+
+	.font-racing-sans-one {
+		font-family: "Racing Sans One", sans-serif;
+		font-weight: 400;
+		font-style: normal;
+	}
+}

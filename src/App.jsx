@@ -18,10 +18,11 @@ import ProfilePage from "./pages/ProfilePage";
 import dimTheme from "./themes/theme.ts";
 
 
+
 function App() {
 	return (
 		<ThemeProvider theme={dimTheme}>
-			<CssBaseline />
+			<CssBaseline /> 
 			<Router>
 				<Box
 					sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
