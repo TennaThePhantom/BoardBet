@@ -34,14 +34,14 @@ import {
 	Security as SecurityIcon,
 	Support as SupportIcon,
 } from "@mui/icons-material";
+import useLayoutStore from "../../stores/layoutStore"; // Adjust path as needed
 
 // make sidebar all the text load first then appear to not see the text try to fit like a skeleton loader
 // try to add more items to sidebar if i can think of any more to add
 // make border between sections more visible
-// add something for the top of siderbar like two buttons saying two games like connect 4 and monoply besides just the menu icon 
+// add something for the top of siderbar like two buttons saying two games like connect 4 and monoply besides just the menu icon
 // make a component for the mobile verison of the sidebar(do this when the home pagge has the search bar and the welcome message on it)
 // when hover over icons in sidebar make them show text of what they are when sidebar is collapsed(shows icons only)
-
 
 const DrawerHeader = styled("div")(({ theme }) => ({
 	display: "flex",
@@ -64,16 +64,14 @@ const ScrollableSideBar = styled(Box)(({ theme }) => ({
 }));
 
 const Sidebar = () => {
-	const [isCollapsed, setIsCollapsed] = useState(false);
+	// Zustand for slider state
+	const { isSidebarOpen, toggleSidebar } = useLayoutStore();
+
 	const [openPromotions, setOpenPromotions] = useState(false);
 	const [openSponsorships, setOpenSponsorships] = useState(false);
 
 	const drawerWidth = 240;
 	const collapsedWidth = 72;
-
-	const handleToggleCollapse = () => {
-		setIsCollapsed(!isCollapsed);
-	};
 
 	const handlePromotionsClick = () => {
 		setOpenPromotions(!openPromotions);
@@ -131,18 +129,17 @@ const Sidebar = () => {
 	];
 
 	return (
-		<Box sx={{ display: "flex", height: "100vh" }}>
 			<Drawer
 				variant="permanent"
 				sx={{
-					width: isCollapsed ? collapsedWidth : drawerWidth,
+					width: isSidebarOpen ? collapsedWidth : drawerWidth,
 					flexShrink: 0,
 					"& .MuiDrawer-paper": {
-						width: isCollapsed ? collapsedWidth : drawerWidth,
+						width: isSidebarOpen ? collapsedWidth : drawerWidth,
 						boxSizing: "border-box",
 						overflowX: "hidden",
 						transition: "width 0.3s linear",
-						// hides scrollbar for drawer 
+						// hides scrollbar for drawer
 						"&::-webkit-scrollbar": {
 							display: "none",
 						},
@@ -152,8 +149,8 @@ const Sidebar = () => {
 				}}
 			>
 				<DrawerHeader>
-					<IconButton onClick={handleToggleCollapse}>
-						{isCollapsed ? <MenuIcon /> : <MenuIcon />}
+					<IconButton onClick={toggleSidebar}>
+						{isSidebarOpen ? <MenuIcon /> : <ChevronLeftIcon />}
 					</IconButton>
 				</DrawerHeader>
 
@@ -164,7 +161,7 @@ const Sidebar = () => {
 						<React.Fragment key={sectionIndex}>
 							<List>
 								{/* Section Title */}
-								{section.title && !isCollapsed && (
+								{section.title && !isSidebarOpen && (
 									<ListItem sx={{ px: 3, py: 1 }}>
 										<Typography
 											variant="caption"
@@ -188,7 +185,7 @@ const Sidebar = () => {
 												onClick={item.onClick}
 												sx={{
 													minHeight: 48,
-													justifyContent: isCollapsed ? "center" : "initial",
+													justifyContent: isSidebarOpen ? "center" : "initial",
 													px: 2.5,
 													"&:hover": {
 														backgroundColor: "action.hover",
@@ -198,14 +195,14 @@ const Sidebar = () => {
 												<ListItemIcon
 													sx={{
 														minWidth: 0,
-														mr: isCollapsed ? "auto" : 3,
+														mr: isSidebarOpen ? "auto" : 3,
 														justifyContent: "center",
 														color: "primary.main",
 													}}
 												>
 													{item.icon}
 												</ListItemIcon>
-												{!isCollapsed && (
+												{!isSidebarOpen && (
 													<>
 														<ListItemText
 															primary={item.text}
@@ -226,7 +223,7 @@ const Sidebar = () => {
 										</ListItem>
 
 										{/* Expandable Content */}
-										{!isCollapsed && item.expandable && (
+										{!isSidebarOpen && item.expandable && (
 											<Collapse in={item.open} timeout="auto" unmountOnExit>
 												<List component="div" disablePadding>
 													<ListItemButton sx={{ pl: 4 }}>
@@ -252,7 +249,6 @@ const Sidebar = () => {
 					))}
 				</ScrollableSideBar>
 			</Drawer>
-		</Box>
 	);
 };
 

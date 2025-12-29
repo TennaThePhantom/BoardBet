@@ -1,3 +1,4 @@
+// components/layout/Navbar.jsx
 import React from "react";
 import {
 	AppBar,
@@ -8,10 +9,14 @@ import {
 	useMediaQuery,
 	useTheme,
 } from "@mui/material";
+import useLayoutStore from "../../stores/layoutStore"; // Adjust path as needed
 
 const ResponsiveNavbar = () => {
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+	
+	// Get sidebar width from Zustand
+	const sidebarWidth = useLayoutStore((state) => state.sidebarWidth);
 
 	const navItems = [
 		{ label: "Login", onClick: () => console.log("Login clicked") },
@@ -19,7 +24,17 @@ const ResponsiveNavbar = () => {
 	];
 
 	return (
-		<AppBar position="static" className="bg-white shadow-sm" elevation={0}>
+		<AppBar 
+			position="fixed"
+			className="bg-white shadow-sm" 
+			elevation={0}
+			sx={{
+				width: `calc(100% - ${sidebarWidth}px)`,
+				marginLeft: `${sidebarWidth}px`,
+				transition: 'margin-left 0.3s linear, width 0.3s linear',
+				zIndex: (theme) => theme.zIndex.drawer + 1,
+			}}
+		>
 			<Toolbar className="flex justify-between items-center px-4 md:px-8 py-3">
 				{/* Left side - Brand */}
 				<Typography

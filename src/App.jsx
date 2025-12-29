@@ -17,8 +17,6 @@ import ProfilePage from "./pages/ProfilePage";
 // Theme
 import dimTheme from "./themes/theme.ts";
 
-
-
 function App() {
 	return (
 		<ThemeProvider theme={dimTheme}>
@@ -28,7 +26,11 @@ function App() {
 					sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
 				>
 					<Navbar />
-					<Box sx={{ display: "flex", flex: 1 }}>
+					<Box sx={{ 
+						display: "flex", 
+						flex: 1,
+						mt: 8 // Add margin-top for fixed navbar (adjust based on your navbar height)
+					}}>
 						<Sidebar />
 						<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 							<Routes>
