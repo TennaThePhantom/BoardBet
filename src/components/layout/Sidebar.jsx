@@ -12,6 +12,7 @@ import {
 	Box,
 	IconButton,
 	styled,
+	Tooltip,
 } from "@mui/material";
 import {
 	Menu as MenuIcon,
@@ -129,58 +130,66 @@ const Sidebar = () => {
 	];
 
 	return (
-			<Drawer
-				variant="permanent"
-				sx={{
+		<Drawer
+			variant="permanent"
+			sx={{
+				width: isSidebarOpen ? collapsedWidth : drawerWidth,
+				flexShrink: 0,
+				"& .MuiDrawer-paper": {
 					width: isSidebarOpen ? collapsedWidth : drawerWidth,
-					flexShrink: 0,
-					"& .MuiDrawer-paper": {
-						width: isSidebarOpen ? collapsedWidth : drawerWidth,
-						boxSizing: "border-box",
-						overflowX: "hidden",
-						transition: "width 0.3s linear",
-						// hides scrollbar for drawer
-						"&::-webkit-scrollbar": {
-							display: "none",
-						},
-						msOverflowStyle: "none", // IE and Edge
-						scrollbarWidth: "none", // Firefox
+					boxSizing: "border-box",
+					overflowX: "hidden",
+					transition: "width 0.3s linear",
+					// hides scrollbar for drawer
+					"&::-webkit-scrollbar": {
+						display: "none",
 					},
-				}}
-			>
-				<DrawerHeader>
-					<IconButton onClick={toggleSidebar}>
-						{isSidebarOpen ? <MenuIcon /> : <ChevronLeftIcon />}
-					</IconButton>
-				</DrawerHeader>
+					msOverflowStyle: "none", // IE and Edge
+					scrollbarWidth: "none", // Firefox
+				},
+			}}
+		>
+			<DrawerHeader>
+				<IconButton onClick={toggleSidebar}>
+					{isSidebarOpen ? <MenuIcon /> : <ChevronLeftIcon />}
+				</IconButton>
+			</DrawerHeader>
 
-				<Divider />
+			<Divider />
 
-				<ScrollableSideBar>
-					{menuSections.map((section, sectionIndex) => (
-						<React.Fragment key={sectionIndex}>
-							<List>
-								{/* Section Title */}
-								{section.title && !isSidebarOpen && (
-									<ListItem sx={{ px: 3, py: 1 }}>
-										<Typography
-											variant="caption"
-											sx={{
-												fontWeight: "bold",
-												color: "text.secondary",
-												textTransform: "uppercase",
-												fontSize: "0.75rem",
-											}}
+			<ScrollableSideBar>
+				{menuSections.map((section, sectionIndex) => (
+					<React.Fragment key={sectionIndex}>
+						<List>
+							{/* Section Title */}
+							{section.title && !isSidebarOpen && (
+								<ListItem sx={{ px: 3, py: 1 }}>
+									<Typography
+										variant="caption"
+										sx={{
+											fontWeight: "bold",
+											color: "text.secondary",
+											textTransform: "uppercase",
+											fontSize: "0.75rem",
+										}}
+									>
+										{section.title}
+									</Typography>
+								</ListItem>
+							)}
+
+							{/* Section Items */}
+							{section.items.map((item, itemIndex) => (
+								<React.Fragment key={item.text}>
+									<ListItem disablePadding sx={{ display: "block" }}>
+										<Tooltip
+											title={item.text}
+											placement="top"
+											arrow
+											disableHoverListener={!isSidebarOpen}
+											leaveDelay={1}
+											disableInteractive={true}
 										>
-											{section.title}
-										</Typography>
-									</ListItem>
-								)}
-
-								{/* Section Items */}
-								{section.items.map((item, itemIndex) => (
-									<React.Fragment key={item.text}>
-										<ListItem disablePadding sx={{ display: "block" }}>
 											<ListItemButton
 												onClick={item.onClick}
 												sx={{
@@ -220,35 +229,36 @@ const Sidebar = () => {
 													</>
 												)}
 											</ListItemButton>
-										</ListItem>
+										</Tooltip>
+									</ListItem>
 
-										{/* Expandable Content */}
-										{!isSidebarOpen && item.expandable && (
-											<Collapse in={item.open} timeout="auto" unmountOnExit>
-												<List component="div" disablePadding>
-													<ListItemButton sx={{ pl: 4 }}>
-														<ListItemText
-															primary="Coming soon"
-															primaryTypographyProps={{
-																fontSize: "0.8rem",
-																fontStyle: "italic",
-																color: "text.secondary",
-															}}
-														/>
-													</ListItemButton>
-												</List>
-											</Collapse>
-										)}
-									</React.Fragment>
-								))}
-							</List>
+									{/* Expandable Content */}
+									{!isSidebarOpen && item.expandable && (
+										<Collapse in={item.open} timeout="auto" unmountOnExit>
+											<List component="div" disablePadding>
+												<ListItemButton sx={{ pl: 4 }}>
+													<ListItemText
+														primary="Coming soon"
+														primaryTypographyProps={{
+															fontSize: "0.8rem",
+															fontStyle: "italic",
+															color: "text.secondary",
+														}}
+													/>
+												</ListItemButton>
+											</List>
+										</Collapse>
+									)}
+								</React.Fragment>
+							))}
+						</List>
 
-							{/* Divider between sections (except after the last one) */}
-							{sectionIndex < menuSections.length - 1 && <Divider />}
-						</React.Fragment>
-					))}
-				</ScrollableSideBar>
-			</Drawer>
+						{/* Divider between sections (except after the last one) */}
+						{sectionIndex < menuSections.length - 1 && <Divider />}
+					</React.Fragment>
+				))}
+			</ScrollableSideBar>
+		</Drawer>
 	);
 };
 

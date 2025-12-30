@@ -6,8 +6,8 @@ interface LayoutStore {
 }
 
 const useLayoutStore = create<LayoutStore>((set) => ({
-	isSidebarOpen: false,
-	sidebarWidth: 240,
+	isSidebarOpen: true,
+	sidebarWidth: 72,
 
 	toggleSidebar: () =>
 		set((state) => ({
