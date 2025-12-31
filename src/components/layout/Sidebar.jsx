@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Drawer,
 	List,
@@ -35,14 +35,10 @@ import {
 	Security as SecurityIcon,
 	Support as SupportIcon,
 } from "@mui/icons-material";
-import useLayoutStore from "../../stores/layoutStore"; // Adjust path as needed
+import useLayoutStore from "../../stores/layoutStore";
 
-// make sidebar all the text load first then appear to not see the text try to fit like a skeleton loader
-// try to add more items to sidebar if i can think of any more to add
-// make border between sections more visible
 // add something for the top of siderbar like two buttons saying two games like connect 4 and monoply besides just the menu icon
 // make a component for the mobile verison of the sidebar(do this when the home pagge has the search bar and the welcome message on it)
-// when hover over icons in sidebar make them show text of what they are when sidebar is collapsed(shows icons only)
 
 const DrawerHeader = styled("div")(({ theme }) => ({
 	display: "flex",
@@ -62,6 +58,21 @@ const ScrollableSideBar = styled(Box)(({ theme }) => ({
 	// Hide scrollbar for IE, Edge and Firefox
 	msOverflowStyle: "none", // IE and Edge
 	scrollbarWidth: "none", // Firefox
+}));
+
+// Styled wrapper for the sidebar content with fade-in effect
+const FadeInContent = styled(Box)(({ theme }) => ({
+	opacity: 0,
+	animation: "fadeIn 0.5s ease-in forwards",
+	animationDelay: "0.3s",
+	"@keyframes fadeIn": {
+		"0%": {
+			opacity: 0,
+		},
+		"100%": {
+			opacity: 1,
+		},
+	},
 }));
 
 const Sidebar = () => {
@@ -100,6 +111,8 @@ const Sidebar = () => {
 				{ text: "Hasbro Games", icon: <ExtensionIcon /> },
 				{ text: "Card Games", icon: <StyleIcon /> },
 				{ text: "Dice Games", icon: <CasinoIcon /> },
+				{ text: "Strategy Games", icon: <SportsEsportsIcon /> },
+				{ text: "Party Games", icon: <GroupsIcon /> },
 			],
 		},
 		{
@@ -112,6 +125,8 @@ const Sidebar = () => {
 					onClick: handlePromotionsClick,
 				},
 				{ text: "Blog", icon: <ArticleIcon /> },
+				{ text: "News", icon: <ArticleIcon /> },
+				{ text: "Events", icon: <ScheduleIcon /> },
 			],
 		},
 		{
@@ -125,6 +140,8 @@ const Sidebar = () => {
 				},
 				{ text: "Responsible Gaming", icon: <SecurityIcon /> },
 				{ text: "Live Support", icon: <SupportIcon /> },
+				{ text: "Help Center", icon: <SupportIcon /> },
+				{ text: "Community", icon: <GroupsIcon /> },
 			],
 		},
 	];
@@ -155,9 +172,12 @@ const Sidebar = () => {
 				</IconButton>
 			</DrawerHeader>
 
-			<Divider />
-
-			<ScrollableSideBar>
+			<Divider
+				sx={{
+					marginTop: 0.8, // just to be aligned with the nav bar
+				}}
+			/>
+			<ScrollableSideBar component={!isSidebarOpen ? FadeInContent : ""}>
 				{menuSections.map((section, sectionIndex) => (
 					<React.Fragment key={sectionIndex}>
 						<List>
@@ -182,7 +202,7 @@ const Sidebar = () => {
 							{section.items.map((item, itemIndex) => (
 								<React.Fragment key={item.text}>
 									<ListItem disablePadding sx={{ display: "block" }}>
-										<Tooltip
+										<Tooltip // Text for Hover icons when sidebar is collapsed
 											title={item.text}
 											placement="top"
 											arrow
@@ -253,8 +273,16 @@ const Sidebar = () => {
 							))}
 						</List>
 
-						{/* Divider between sections (except after the last one) */}
-						{sectionIndex < menuSections.length - 1 && <Divider />}
+						{/* Divider between sections - made more visible */}
+						{sectionIndex < menuSections.length - 1 && (
+							<Divider
+								sx={{
+									my: 0.5,
+									borderBottomWidth: 2,
+									borderColor: "divider",
+								}}
+							/>
+						)}
 					</React.Fragment>
 				))}
 			</ScrollableSideBar>
