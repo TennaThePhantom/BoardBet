@@ -1,7 +1,10 @@
 import React from "react";
+import SocialBanner from "../components/SocialBanner.jsx";
 
 function HomePage() {
-	return <div>HomePage</div>;
+	return (
+		<SocialBanner/>
+	);
 }
 
 export default HomePage;
