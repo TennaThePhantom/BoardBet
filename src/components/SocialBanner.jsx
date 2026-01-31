@@ -8,10 +8,10 @@ import {
 	useTheme,
 	useMediaQuery,
 } from "@mui/material";
-import CasinoIcon from "@mui/icons-material/Casino"; // Alternative 1
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports"; // Alternative 2
-// or use a generic gaming icon
-import VideogameAssetIcon from "@mui/icons-material/VideogameAsset"; // Alternative 3
+// change these icons later to google twitch facebook icons
+import CasinoIcon from "@mui/icons-material/Casino";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 import useLayoutStore from "../stores/layoutStore";
 
 export const SocialBanner = () => {
@@ -20,6 +20,7 @@ export const SocialBanner = () => {
 	const { isSidebarOpen } = useLayoutStore();
 
 	return (
+		// container box
 		<Box
 			sx={{
 				position: "absolute",
@@ -34,15 +35,13 @@ export const SocialBanner = () => {
 				borderRadius: { xs: 0, md: 2 },
 				overflow: "hidden",
 				marginBottom: 0,
-				// Full width from sidebar edge to right edge
 				width: {
 					xs: "100%",
 					md: isSidebarOpen ? "95.6%" : "calc(95.6% - 170px)",
-					width: "auto",
 				},
 			}}
-		>
-			<Box
+		> 
+			<Box // for header and buttons and game boxes
 				sx={{
 					position: "absolute",
 					top: 0,
@@ -53,27 +52,29 @@ export const SocialBanner = () => {
 					backgroundBlendMode: "multiply",
 					display: "flex",
 					alignItems: "center",
+					justifyContent: "space-between",
 				}}
 			>
-				<Box
+				<Box // header and buttons
 					sx={{
-						textAlign: "left", // Changed from center to left
+						textAlign: "left",
 						color: "white",
-						maxWidth: "600px", // Reduced max width
-						width: { xs: "90%", md: "50%" }, // Take 50% width on desktop for left side
+						maxWidth: "600px",
+						width: { xs: "90%", md: "35%" },
 						px: 4,
 						py: 3,
+						marginLeft: 12,
+						flexShrink: 0, // Prevent shrinking
 					}}
 				>
-					{/* Smaller header text */}
 					<Typography
-						variant={isMobile ? "h5" : "h4"} // Reduced from h4/h2 to h5/h4
+						variant={isMobile ? "h5" : "h4"}
 						fontWeight="bold"
 						gutterBottom
 						sx={{
 							textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
 							mb: 3,
-							fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2.125rem" }, // Custom font sizes
+							fontSize: { xs: "1.225rem", sm: "1.475rem", md: "1.8rem" },
 						}}
 					>
 						The world's favorite board games gambling site
@@ -83,9 +84,7 @@ export const SocialBanner = () => {
 						variant="contained"
 						size={isMobile ? "medium" : "large"}
 						sx={{
-							bgcolor: "#FF4081",
 							"&:hover": {
-								bgcolor: "#F50057",
 								transform: "translateY(-2px)",
 								boxShadow: 6,
 							},
@@ -115,7 +114,7 @@ export const SocialBanner = () => {
 					<Stack
 						direction="row"
 						spacing={2}
-						justifyContent="flex-start" // Changed from center to flex-start
+						justifyContent="flex-start"
 						sx={{ mt: 1 }}
 					>
 						<IconButton
@@ -171,7 +170,7 @@ export const SocialBanner = () => {
 					</Stack>
 				</Box>
 
-				{/* Right side placeholder for game boxes - optional, you can remove this */}
+				{/* Right side game boxes */}
 				<Box
 					sx={{
 						display: { xs: "none", md: "flex" },
@@ -182,35 +181,41 @@ export const SocialBanner = () => {
 						height: "100%",
 						px: 3,
 						gap: 2,
+						flexShrink: 0, // Prevent the entire container from shrinking
+						minWidth: "50%", // Ensure minimum width
+						marginRight: 4
 					}}
 				>
-					{/* Placeholder for game boxes */}
+					{/* Game Box 1 */}
 					<Box
 						sx={{
-							width: "100%",
-							height: "65%",
+							width: "280px", // Fixed width instead of percentage
+							height: "250px", // Fixed height
 							backgroundColor: "rgba(255, 255, 255, 0.1)",
 							borderRadius: 2,
 							border: "2px dashed rgba(255, 255, 255, 0.3)",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
+							flexShrink: 0, // Prevent shrinking
 						}}
 					>
 						<Typography variant="body2" color="rgba(255, 255, 255, 0.7)">
 							Game Box 1
 						</Typography>
 					</Box>
+					{/* Game Box 2 */}
 					<Box
 						sx={{
-							width: "100%",
-							height: "65%",
+							width: "280px", // Fixed width instead of percentage
+							height: "250px", // Fixed height
 							backgroundColor: "rgba(255, 255, 255, 0.1)",
 							borderRadius: 2,
 							border: "2px dashed rgba(255, 255, 255, 0.3)",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
+							flexShrink: 0, // Prevent shrinking
 						}}
 					>
 						<Typography variant="body2" color="rgba(255, 255, 255, 0.7)">
