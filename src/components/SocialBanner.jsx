@@ -37,7 +37,7 @@ export const SocialBanner = () => {
 				marginBottom: 0,
 				width: {
 					xs: "100%",
-					md: isSidebarOpen ? "95.6%" : "calc(95.6% - 170px)",
+					md: isSidebarOpen ? "95.5%" : "calc(95.5% - 170px)",
 				},
 			}}
 		> 
