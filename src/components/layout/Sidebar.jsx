@@ -156,7 +156,7 @@ const Sidebar = () => {
 					width: isSidebarOpen ? collapsedWidth : drawerWidth,
 					boxSizing: "border-box",
 					overflowX: "hidden",
-					transition: "width 0.3s linear",
+					transition: "width 0.3ms ease",
 					// hides scrollbar for drawer
 					"&::-webkit-scrollbar": {
 						display: "none",

@@ -8,7 +8,7 @@ function HomePage() {
 		<>
 			<SocialBanner />
 			<SearchBar />
-			<ImageSlider />
+			<ImageSlider /> 
 		</>
 	);
 }

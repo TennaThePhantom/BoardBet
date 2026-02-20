@@ -15,14 +15,12 @@ import useLayoutStore from "../stores/layoutStore";
 const SearchContainer = styled(Box)(({ theme, isSidebarOpen }) => ({
 	display: "flex",
 	alignItems: "center",
-	position: "absolute",
-	left: isSidebarOpen ? `calc(72px + 10vw)` : `calc(240px + 5vw)`,
-	width: "70vw",
+	marginLeft: isSidebarOpen ? "155px" : "145px",
+	marginTop: 50,
+	width: isSidebarOpen ? "72.5vw" : "67vw",
 	zIndex: 10,
-	transition: theme.transitions.create(["left", "width"], {
-		easing: theme.transitions.easing.sharp,
-		duration: theme.transitions.duration.leavingScreen,
-	}),
+	transition: "margin-left 0.3ms linear", // Changed from 0.3s to 0.5s linear
+
 
 	[theme.breakpoints.down("md")]: {
 		top: "calc(70px + 35vh)",
@@ -93,11 +91,7 @@ const SearchBar = () => {
 			component="form"
 			onSubmit={handleSearch}
 			sx={{
-				top: isMobile
-					? "calc(70px + 30vh)"
-					: isTablet
-						? "calc(70px + 35vh)"
-						: "calc(70px + 58.5vh)",
+				top: isMobile ? "calc(70px + 30vh)" : "calc(70px + .5vh)",
 			}}
 		>
 			<SearchInput

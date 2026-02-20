@@ -23,9 +23,10 @@ export const SocialBanner = () => {
 		// container box
 		<Box
 			sx={{
-				position: "absolute",
-				top: 70,
-				left: isSidebarOpen ? 70 : 240,
+				position: "relative",
+				top: -20,
+				transform: "translateY(0px)",
+				left: isSidebarOpen ? `calc(70px - 90px)` : `calc(240px - 260px)`,
 				height: { xs: "30vh", sm: "35vh", md: "50vh" },
 				minHeight: "300px",
 				backgroundImage:
@@ -37,7 +38,7 @@ export const SocialBanner = () => {
 				marginBottom: 0,
 				width: {
 					xs: "100%",
-					md: isSidebarOpen ? "95.5%" : "calc(95.5% - 170px)",
+					md: isSidebarOpen ? "calc(100% + 43px)" : "calc(100% + 43px)",
 				},
 			}}
 		> 

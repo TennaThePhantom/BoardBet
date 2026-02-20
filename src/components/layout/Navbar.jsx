@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import useLayoutStore from "../../stores/layoutStore"; // Adjust path as needed
 
-const ResponsiveNavbar = () => {
+const Navbar = () => {
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	
@@ -31,7 +31,7 @@ const ResponsiveNavbar = () => {
 			sx={{
 				width: `calc(100% - ${sidebarWidth}px)`,
 				marginLeft: `${sidebarWidth}px`,
-				transition: 'margin-left 0.3s linear, width 0.3s linear',
+				transition: 'margin-left 0.3ms ease, width 0.3ms ease',
 				zIndex: (theme) => theme.zIndex.drawer + 1,
 			}}
 		>
@@ -73,4 +73,4 @@ const ResponsiveNavbar = () => {
 	);
 };
 
-export default ResponsiveNavbar;
+export default Navbar;

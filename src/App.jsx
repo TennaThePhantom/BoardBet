@@ -20,17 +20,19 @@ import dimTheme from "./themes/theme.ts";
 function App() {
 	return (
 		<ThemeProvider theme={dimTheme}>
-			<CssBaseline /> 
+			<CssBaseline />
 			<Router>
 				<Box
 					sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
 				>
 					<Navbar />
-					<Box sx={{ 
-						display: "flex", 
-						flex: 1,
-						mt: 8 // Add margin-top for fixed navbar (adjust based on your navbar height)
-					}}>
+					<Box
+						sx={{
+							display: "flex",
+							flex: 1,
+							mt: 8, // Add margin-top for fixed navbar (adjust based on your navbar height)
+						}}
+					>
 						<Sidebar />
 						<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 							<Routes>
@@ -39,7 +41,9 @@ function App() {
 							</Routes>
 						</Box>
 					</Box>
-					<Footer />
+					<Box component={"footer"} sx={{ mt: "auto" }}>
+						<Footer />
+					</Box>
 				</Box>
 			</Router>
 		</ThemeProvider>

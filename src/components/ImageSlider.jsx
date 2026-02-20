@@ -52,7 +52,7 @@ const ImageSlider = () => {
 
 	// Initialize games
 	useEffect(() => {
-		setGames(generateGameData(64));
+		setGames(generateGameData(63));
 	}, []);
 
 	// Calculate slides per view based on screen size
@@ -82,17 +82,17 @@ const ImageSlider = () => {
 
 	// Calculate container position based on sidebar
 	const containerStyles = {
-		position: "absolute",
-		top: "80vh",
-		left: isSidebarOpen ? "72px" : "240px",
-		width: isSidebarOpen ? "calc(100% - 72px)" : "calc(100% - 240px)",
-		transition: "all 0.3s ease",
+		width: isSidebarOpen ? "calc(100% - 305px)" : "calc(100% - 230px)",
 		zIndex: 5,
-		px: 3,
-		py: 4,
+		px: 2,
+		py: 3,
 		backgroundColor: theme.palette.background.default,
 		borderRadius: 2,
 		boxShadow: theme.shadows[3],
+		mt: 6, // Add some margin top instead of fixed positioning
+		mb: 10, // Add margin bottom for spacing
+		marginLeft: isSidebarOpen ? "155px" : "145px",
+		transition: "all 0.3ms linear", // Changed from 0.3s to 0.5s linear
 
 		[theme.breakpoints.down("sm")]: {
 			left: 0,
@@ -177,6 +177,7 @@ const ImageSlider = () => {
 					gridTemplateColumns: `repeat(${slidesPerView}, 1fr)`,
 					gap: 2,
 					overflow: "hidden",
+					flexShrink: 0,
 				}}
 			>
 				{visibleGames.map((game) => (
