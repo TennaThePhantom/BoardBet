@@ -36,6 +36,7 @@ import {
 	Support as SupportIcon,
 } from "@mui/icons-material";
 import useLayoutStore from "../../stores/layoutStore";
+import { useNavigate } from "react-router-dom"; // Changed from Router, Routes, Route
 
 // add something for the top of siderbar like two buttons saying two games like connect 4 and monoply besides just the menu icon
 // make a component for the mobile verison of the sidebar(do this when the home pagge has the search bar and the welcome message on it)
@@ -78,6 +79,7 @@ const FadeInContent = styled(Box)(({ theme }) => ({
 const Sidebar = () => {
 	// Zustand for slider state
 	const { isSidebarOpen, toggleSidebar } = useLayoutStore();
+	const navigate = useNavigate(); // Add useNavigate hook
 
 	const [openPromotions, setOpenPromotions] = useState(false);
 	const [openSponsorships, setOpenSponsorships] = useState(false);
@@ -93,26 +95,72 @@ const Sidebar = () => {
 		setOpenSponsorships(!openSponsorships);
 	};
 
+	// Navigation handler
+	const handleNavigation = (text) => {
+		switch (text) {
+			case "New Releases":
+				navigate("/new-releases");
+				break;
+			case "Favorites":
+				navigate("/favorites");
+				break;
+			case "Recent":
+				navigate("/recent");
+				break;
+			case "Custom Lobbies":
+				navigate("/custom-lobbies");
+				break;
+			// Add more cases for other menu items as needed
+			default:
+				// Handle default case or do nothing
+				break;
+		}
+	};
+
 	const menuSections = [
 		{
 			items: [
-				{ text: "Favorites", icon: <StarIcon /> },
-				{ text: "Recent", icon: <ScheduleIcon /> },
-				{ text: "Custom Lobbies", icon: <GroupsIcon /> },
+				{ text: "Favorites", icon: <StarIcon />, path: "/favorites" },
+				{ text: "Recent", icon: <ScheduleIcon />, path: "/recent" },
+				{
+					text: "Custom Lobbies",
+					icon: <GroupsIcon />,
+					path: "/custom-lobbies",
+				},
 			],
 		},
 		{
 			title: "Games",
 			items: [
-				{ text: "New Releases", icon: <NewReleasesIcon /> },
-				{ text: "Classic Games", icon: <HistoryIcon /> },
-				{ text: "BoardBet Originals", icon: <CasinoIcon /> },
-				{ text: "Only On BoardBet", icon: <SportsEsportsIcon /> },
-				{ text: "Hasbro Games", icon: <ExtensionIcon /> },
-				{ text: "Card Games", icon: <StyleIcon /> },
-				{ text: "Dice Games", icon: <CasinoIcon /> },
-				{ text: "Strategy Games", icon: <SportsEsportsIcon /> },
-				{ text: "Party Games", icon: <GroupsIcon /> },
+				{
+					text: "New Releases",
+					icon: <NewReleasesIcon />,
+					path: "/new-releases",
+				},
+				{
+					text: "Classic Games",
+					icon: <HistoryIcon />,
+					path: "/classic-games",
+				},
+				{
+					text: "BoardBet Originals",
+					icon: <CasinoIcon />,
+					path: "/originals",
+				},
+				{
+					text: "Only On BoardBet",
+					icon: <SportsEsportsIcon />,
+					path: "/exclusives",
+				},
+				{ text: "Hasbro Games", icon: <ExtensionIcon />, path: "/hasbro" },
+				{ text: "Card Games", icon: <StyleIcon />, path: "/card-games" },
+				{ text: "Dice Games", icon: <CasinoIcon />, path: "/dice-games" },
+				{
+					text: "Strategy Games",
+					icon: <SportsEsportsIcon />,
+					path: "/strategy-games",
+				},
+				{ text: "Party Games", icon: <GroupsIcon />, path: "/party-games" },
 			],
 		},
 		{
@@ -124,9 +172,9 @@ const Sidebar = () => {
 					open: openPromotions,
 					onClick: handlePromotionsClick,
 				},
-				{ text: "Blog", icon: <ArticleIcon /> },
-				{ text: "News", icon: <ArticleIcon /> },
-				{ text: "Events", icon: <ScheduleIcon /> },
+				{ text: "Blog", icon: <ArticleIcon />, path: "/blog" },
+				{ text: "News", icon: <ArticleIcon />, path: "/news" },
+				{ text: "Events", icon: <ScheduleIcon />, path: "/events" },
 			],
 		},
 		{
@@ -138,13 +186,26 @@ const Sidebar = () => {
 					open: openSponsorships,
 					onClick: handleSponsorshipsClick,
 				},
-				{ text: "Responsible Gaming", icon: <SecurityIcon /> },
-				{ text: "Live Support", icon: <SupportIcon /> },
-				{ text: "Help Center", icon: <SupportIcon /> },
-				{ text: "Community", icon: <GroupsIcon /> },
+				{
+					text: "Responsible Gaming",
+					icon: <SecurityIcon />,
+					path: "/responsible-gaming",
+				},
+				{ text: "Live Support", icon: <SupportIcon />, path: "/live-support" },
+				{ text: "Help Center", icon: <SupportIcon />, path: "/help" },
+				{ text: "Community", icon: <GroupsIcon />, path: "/community" },
 			],
 		},
 	];
+
+	// Updated click handler for ListItemButton
+	const handleItemClick = (item) => {
+		if (item.onClick) {
+			item.onClick(); // For expandable items like Promotions and Sponsorships
+		} else if (item.path) {
+			handleNavigation(item.text); // Navigate based on the item text
+		}
+	};
 
 	return (
 		<Drawer
@@ -211,7 +272,7 @@ const Sidebar = () => {
 											disableInteractive={true}
 										>
 											<ListItemButton
-												onClick={item.onClick}
+												onClick={() => handleItemClick(item)} // Updated to use new handler
 												sx={{
 													minHeight: 48,
 													justifyContent: isSidebarOpen ? "center" : "initial",
