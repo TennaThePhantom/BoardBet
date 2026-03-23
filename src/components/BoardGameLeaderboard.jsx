@@ -20,7 +20,9 @@ import {
 	Token as TokenIcon,
 	SportsEsports as SportsEsportsIcon,
 	Security as SecurityIcon,
+	AttachMoney as MoneyIcon, // Changed icon to match real money
 } from "@mui/icons-material";
+import useLayoutStore from "../stores/layoutStore";
 
 const ToggleContainer = styled(Paper)(({ theme }) => ({
 	display: "inline-flex",
@@ -43,8 +45,9 @@ const ToggleButton = styled(Button)(({ theme, active }) => ({
 	},
 }));
 
-const CurrencyBadge = styled(Box)(({ type }) => ({
-	backgroundColor: type === "Gold" ? "#e2b42d" : "#00e701",
+// Styled for the green money circle
+const CurrencyBadge = styled(Box)(() => ({
+	backgroundColor: "#00e701",
 	color: "#000",
 	borderRadius: "50%",
 	width: 16,
@@ -54,7 +57,7 @@ const CurrencyBadge = styled(Box)(({ type }) => ({
 	justifyContent: "center",
 	fontSize: "10px",
 	fontWeight: "bold",
-	marginLeft: "4px",
+	marginLeft: "6px",
 }));
 
 const mockData = [
@@ -62,71 +65,112 @@ const mockData = [
 		id: 1,
 		game: "Monopoly",
 		user: "Hidden",
+		opponent: "CPU_Master",
 		time: "7:12 PM",
-		amount: 21000000,
-		currency: "Gold",
-		multiplier: 0.19,
-		profit: -17073000,
+		bet: 20.0,
+		amount: 20.0,
+		profit: -20.0,
 		type: "loss",
 	},
 	{
 		id: 2,
 		game: "Catan",
 		user: "Hidden",
+		opponent: "TraderJoe",
 		time: "7:12 PM",
-		amount: 3000,
-		currency: "Cash",
-		multiplier: 1.0,
-		profit: 3000,
+		bet: 50.0,
+		amount: 50.0,
+		profit: 50.0,
 		type: "win",
 	},
 	{
 		id: 3,
 		game: "Risk",
 		user: "Quinnjay22",
+		opponent: "Hidden",
 		time: "7:12 PM",
-		amount: 35000,
-		currency: "Gold",
-		multiplier: 350.0,
-		profit: 12250000,
+		bet: 100.0,
+		amount: 100.0,
+		profit: 350.0,
 		type: "bigWin",
 	},
 	{
 		id: 4,
 		game: "Monopoly",
 		user: "Hidden",
+		opponent: "Banker99",
 		time: "7:12 PM",
-		amount: 2000,
-		currency: "Cash",
-		multiplier: 0.0,
-		profit: -2000,
+		bet: 10.0,
+		amount: 10.0,
+		profit: -10.0,
 		type: "loss",
 	},
 	{
 		id: 5,
-		game: "Scrabble",
+		game: "Catan",
 		user: "Hidden",
-		time: "7:12 PM",
-		amount: 6000,
-		currency: "Cash",
-		multiplier: 0.0,
-		profit: -6000,
+		opponent: "SheepLord",
+		time: "8:45 PM",
+		bet: 75.0,
+		amount: 75.0,
+		profit: 150.0,
+		type: "win",
+	},
+	{
+		id: 6,
+		game: "Chess",
+		user: "Hidden",
+		opponent: "GrandMasterX",
+		time: "9:30 PM",
+		bet: 200.0,
+		amount: 200.0,
+		profit: -200.0,
 		type: "loss",
+	},
+	{
+		id: 7,
+		game: "Risk",
+		user: "Quinnjay22",
+		opponent: "Hidden",
+		time: "10:15 PM",
+		bet: 500.0,
+		amount: 500.0,
+		profit: 2500.0,
+		type: "bigWin",
+	},
+	{
+		id: 8,
+		game: "Uno",
+		user: "Hidden",
+		opponent: "CardShark",
+		time: "11:00 PM",
+		bet: 30.0,
+		amount: 30.0,
+		profit: 30.0,
+		type: "win",
 	},
 ];
 
-const formatNumber = (num) => {
+const formatCurrency = (num) => {
 	return new Intl.NumberFormat("en-US", {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2,
+		style: "currency",
+		currency: "USD",
 	}).format(num);
 };
 
 const BoardGameLeaderboard = () => {
 	const [activeTab, setActiveTab] = useState("bets");
-
+	const { isSidebarOpen } = useLayoutStore();
 	return (
-		<Box sx={{ width: "100%", maxWidth: "1100px", mx: "auto", p: 3, marginLeft: "125px"}}>
+		<Box
+			sx={{
+				width: "100%",
+				maxWidth: isSidebarOpen ? "1200px" : "1100px",
+				mx: "auto",
+				p: 3,
+				marginLeft: isSidebarOpen ? "125px" : "125px",
+			}}
+		>
 			<ToggleContainer elevation={0}>
 				<ToggleButton
 					active={activeTab === "bets" ? 1 : 0}
@@ -148,13 +192,17 @@ const BoardGameLeaderboard = () => {
 				sx={{ bgcolor: "transparent", backgroundImage: "none" }}
 			>
 				<Table
-					sx={{ minWidth: 650, borderCollapse: "separate", borderSpacing: 0 }}
-					aria-label="board game leaderboard"
+					sx={{
+						minWidth: 800,
+						borderCollapse: "separate",
+						borderSpacing: "0 4px",
+					}}
 				>
 					<TableHead>
 						<TableRow
 							sx={{
 								backgroundColor: "#000000",
+								"& th": { borderBottom: "none", color: "text.secondary" },
 								"& th:first-of-type": {
 									borderTopLeftRadius: "10px",
 									borderBottomLeftRadius: "10px",
@@ -165,33 +213,12 @@ const BoardGameLeaderboard = () => {
 								},
 							}}
 						>
-							<TableCell sx={{ color: "text.secondary", borderBottom: "none" }}>
-								Game
-							</TableCell>
-							<TableCell sx={{ color: "text.secondary", borderBottom: "none" }}>
-								User
-							</TableCell>
-							<TableCell sx={{ color: "text.secondary", borderBottom: "none" }}>
-								Time
-							</TableCell>
-							<TableCell
-								align="right"
-								sx={{ color: "text.secondary", borderBottom: "none" }}
-							>
-								Amount
-							</TableCell>
-							<TableCell
-								align="right"
-								sx={{ color: "text.secondary", borderBottom: "none" }}
-							>
-								Multiplier
-							</TableCell>
-							<TableCell
-								align="right"
-								sx={{ color: "text.secondary", borderBottom: "none" }}
-							>
-								Result
-							</TableCell>
+							<TableCell>Game</TableCell>
+							<TableCell>User</TableCell>
+							<TableCell>Time</TableCell>
+							<TableCell align="right">Bet</TableCell>
+							<TableCell align="left">Opponent</TableCell>
+							<TableCell align="right">Result</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -199,135 +226,83 @@ const BoardGameLeaderboard = () => {
 							<TableRow
 								key={row.id}
 								sx={{
-									"&:nth-of-type(even)": {
-										bgcolor: "rgba(255, 255, 255, 0.02)",
-									},
+									bgcolor: "rgba(255, 255, 255, 0.02)",
 									"&:hover": { bgcolor: "rgba(255, 255, 255, 0.05)" },
 									cursor: "pointer",
-									border: "none",
 								}}
 							>
 								<TableCell
 									sx={{
+										border: "none",
 										color: "text.primary",
-										borderBottom: "none",
 										fontWeight: 600,
 									}}
 								>
 									<Stack direction="row" alignItems="center" spacing={1}>
 										{row.game === "Monopoly" && (
 											<HomeIcon
-												sx={{ color: "text.secondary", fontSize: 20 }}
+												sx={{ fontSize: 20, color: "text.secondary" }}
 											/>
 										)}
 										{row.game === "Risk" && (
-											<MapIcon sx={{ color: "text.secondary", fontSize: 20 }} />
+											<MapIcon sx={{ fontSize: 20, color: "text.secondary" }} />
 										)}
 										{row.game === "Catan" && (
 											<TokenIcon
-												sx={{ color: "text.secondary", fontSize: 20 }}
+												sx={{ fontSize: 20, color: "text.secondary" }}
 											/>
 										)}
-										{["Scrabble"].includes(row.game) && (
-											<SportsEsportsIcon
-												sx={{ color: "text.secondary", fontSize: 20 }}
-											/>
-										)}
-										<Typography variant="body2" fontWeight="600">
-											{row.game}
-										</Typography>
+										<Typography variant="body2">{row.game}</Typography>
 									</Stack>
 								</TableCell>
 
-								<TableCell sx={{ borderBottom: "none" }}>
+								<TableCell sx={{ border: "none" }}>
 									<Stack direction="row" alignItems="center" spacing={1}>
 										{row.user === "Hidden" ? (
-											<SecurityIcon
-												sx={{ fontSize: 18, color: "text.secondary" }}
-											/>
+											<SecurityIcon sx={{ fontSize: 16 }} />
 										) : (
 											<Avatar sx={{ width: 20, height: 20, fontSize: 10 }}>
 												Q
 											</Avatar>
 										)}
-										<Typography
-											variant="body2"
-											color={
-												row.user === "Hidden"
-													? "text.secondary"
-													: "text.primary"
-											}
-											fontWeight={row.user !== "Hidden" ? "bold" : "normal"}
-										>
-											{row.user}
-										</Typography>
+										<Typography variant="body2">{row.user}</Typography>
 									</Stack>
 								</TableCell>
 
-								<TableCell
-									sx={{ color: "text.secondary", borderBottom: "none" }}
-								>
+								<TableCell sx={{ border: "none", color: "text.secondary" }}>
 									{row.time}
 								</TableCell>
 
-								<TableCell align="right" sx={{ borderBottom: "none" }}>
+								<TableCell align="right" sx={{ border: "none" }}>
 									<Stack
 										direction="row"
 										justifyContent="flex-end"
 										alignItems="center"
 									>
-										<Typography
-											variant="body2"
-											fontWeight={500}
-											color="text.primary"
-										>
-											{formatNumber(row.amount)}
+										<Typography variant="body2" fontWeight={600}>
+											{formatCurrency(row.bet)}
 										</Typography>
-										<CurrencyBadge type={row.currency}>
-											{row.currency === "Gold" ? "G" : "S"}
+										<CurrencyBadge>
+											<MoneyIcon sx={{ fontSize: 12 }} />
 										</CurrencyBadge>
 									</Stack>
 								</TableCell>
 
-								<TableCell align="right" sx={{ borderBottom: "none" }}>
-									{row.type === "bigWin" && (
-										<Box component="span" sx={{ mr: 1 }}>
-											🔥
-										</Box>
-									)}
-									<Typography
-										component="span"
-										variant="body2"
-										fontWeight={500}
-										sx={{
-											color:
-												row.type === "bigWin" ? "#ffaa00" : "text.secondary",
-										}}
-									>
-										{row.multiplier.toFixed(2)}×
+								<TableCell align="left" sx={{ border: "none" }}>
+									<Typography variant="body2" color="text.secondary">
+										{row.opponent}
 									</Typography>
 								</TableCell>
 
-								<TableCell align="right" sx={{ borderBottom: "none" }}>
-									<Stack
-										direction="row"
-										justifyContent="flex-end"
-										alignItems="center"
+								<TableCell align="right" sx={{ border: "none" }}>
+									<Typography
+										variant="body2"
+										fontWeight="bold"
+										sx={{ color: row.profit >= 0 ? "#00e701" : "#ff4d4d" }}
 									>
-										<Typography
-											variant="body2"
-											fontWeight="bold"
-											sx={{
-												color: row.profit >= 0 ? "#00e701" : "text.primary",
-											}}
-										>
-											{row.profit >= 0 ? "+" : ""}
-											{formatNumber(row.profit)}
-										</Typography>
-										<CurrencyBadge type={row.currency}>
-											{row.currency === "Gold" ? "G" : "S"}
-										</CurrencyBadge>
-									</Stack>
+										{row.profit >= 0 ? "+" : ""}
+										{formatCurrency(row.profit)}
+									</Typography>
 								</TableCell>
 							</TableRow>
 						))}
