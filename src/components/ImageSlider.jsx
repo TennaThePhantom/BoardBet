@@ -1,351 +1,213 @@
-// components/ImageSlider.jsx
-// good starter place needs adjustments and improvements
 import React, { useState, useRef, useEffect } from "react";
 import {
-	Box,
-	Typography,
-	IconButton,
-	Stack,
-	Card,
-	CardMedia,
-	CardContent,
-	useTheme,
-	useMediaQuery,
-	Chip,
-	alpha,
+    Box,
+    Typography,
+    IconButton,
+    Stack,
+    styled,
+    useTheme,
+    useMediaQuery,
 } from "@mui/material";
 import {
-	ChevronLeft as ChevronLeftIcon,
-	ChevronRight as ChevronRightIcon,
-	Casino as CasinoIcon,
-	Star as StarIcon,
+    ChevronLeft as ChevronLeftIcon,
+    ChevronRight as ChevronRightIcon,
+    TrendingUp as TrendingUpIcon,
 } from "@mui/icons-material";
 import useLayoutStore from "../stores/layoutStore";
 
-// Generate placeholder game data
+// --- Styled Components (Shared logic from GamesDisplay) ---
+const CardContainer = styled(Box)({
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    cursor: "pointer",
+    transition: "transform 0.2s ease-in-out",
+    "&:hover": {
+        transform: "translateY(-4px)",
+    },
+});
+
+const ImageWrapper = styled(Box)({
+    position: "relative",
+    width: "100%",
+    paddingTop: "133%", // ~3:4 Aspect ratio
+    borderRadius: "12px",
+    overflow: "hidden",
+    backgroundColor: "#1a2c38",
+});
+
+const GameImage = styled("img")({
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+});
+
+const GameInfoOverlay = styled(Box)({
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    padding: "30px 10px 10px",
+    background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    textAlign: "center",
+});
+
+const Badge = styled(Box)({
+    position: "absolute",
+    top: "8px",
+    left: "8px",
+    backgroundColor: "#fff",
+    color: "#000",
+    width: "24px",
+    height: "24px",
+    borderRadius: "6px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+    fontSize: "14px",
+    zIndex: 2,
+});
+
+// Mock data generator matching the Grid data structure
 const generateGameData = (count) => {
-	const games = [];
-	for (let i = 1; i <= count; i++) {
-		games.push({
-			id: i,
-			name: `Game ${i}`,
-			image: `https://picsum.photos/300/200?random=${i}`,
-			provider: `Provider ${(i % 5) + 1}`,
-			isNew: i % 7 === 0,
-			isPopular: i % 3 === 0,
-			rating: (Math.random() * 2 + 3).toFixed(1),
-		});
-	}
-	return games;
+    return Array.from({ length: count }, (_, i) => ({
+        id: i + 1,
+        title: `TRENDING ${i + 1}`,
+        provider: "HACKSAW GAMING",
+        players: Math.floor(Math.random() * 500) + 50,
+        image: `https://picsum.photos/seed/slide${i}/200/300`,
+    }));
 };
 
 const ImageSlider = () => {
-	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-	const isTablet = useMediaQuery(theme.breakpoints.down("md"));
-	const { isSidebarOpen } = useLayoutStore();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const isTablet = useMediaQuery(theme.breakpoints.down("md"));
+    const { isSidebarOpen } = useLayoutStore();
 
-	const [games, setGames] = useState([]);
-	const [currentPage, setCurrentPage] = useState(0);
-	const [slidesPerView, setSlidesPerView] = useState(7);
-	const sliderRef = useRef(null);
+    const [games, setGames] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [slidesPerView, setSlidesPerView] = useState(7);
 
-	// Initialize games
-	useEffect(() => {
-		setGames(generateGameData(63));
-	}, []);
+    useEffect(() => {
+        setGames(generateGameData(21)); // 3 pages of 7
+    }, []);
 
-	// Calculate slides per view based on screen size
-	useEffect(() => {
-		if (isMobile) {
-			setSlidesPerView(2);
-		} else if (isTablet) {
-			setSlidesPerView(4);
-		} else {
-			setSlidesPerView(7);
-		}
-	}, [isMobile, isTablet]);
+    useEffect(() => {
+        if (isMobile) setSlidesPerView(2);
+        else if (isTablet) setSlidesPerView(4);
+        else setSlidesPerView(7);
+    }, [isMobile, isTablet]);
 
-	const totalPages = Math.ceil(games.length / slidesPerView);
+    const totalPages = Math.ceil(games.length / slidesPerView);
+    const handleNext = () => setCurrentPage((prev) => (prev + 1) % totalPages);
+    const handlePrev = () => setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
 
-	const handleNext = () => {
-		setCurrentPage((prev) => (prev + 1) % totalPages);
-	};
+    const startIndex = currentPage * slidesPerView;
+    const visibleGames = games.slice(startIndex, startIndex + slidesPerView);
 
-	const handlePrev = () => {
-		setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
-	};
+    return (
+        <Box sx={{
+            width: isSidebarOpen ? "calc(100% - 305px)" : "calc(100% - 230px)",
+            mx: "auto",
+            p: 2,
+            backgroundColor: "#0f212e",
+            borderRadius: 2,
+            mt: 6,
+            mb: 4,
+            marginLeft: isSidebarOpen ? "155px" : "145px",
+            transition: "margin-left 0.3ms ease",
+            [theme.breakpoints.down("sm")]: { width: "100%", marginLeft: 0 }
+        }}>
+            
+            {/* Slider Header */}
+            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+                <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Box sx={{ bgcolor: '#2f4553', borderRadius: '50%', p: 0.5, display: 'flex' }}>
+                        <TrendingUpIcon sx={{ color: "#b1bad3", fontSize: 20 }} />
+                    </Box>
+                    <Typography variant="h6" fontWeight="bold" sx={{ color: "white" }}>
+                        Trending Games
+                    </Typography>
+                </Stack>
 
-	// Calculate which games to show
-	const startIndex = currentPage * slidesPerView;
-	const visibleGames = games.slice(startIndex, startIndex + slidesPerView);
+                <Stack direction="row" spacing={0.5}>
+                    <IconButton onClick={handlePrev} disabled={currentPage === 0} sx={navButtonStyle}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                    <IconButton onClick={handleNext} disabled={currentPage === totalPages - 1} sx={navButtonStyle}>
+                        <ChevronRightIcon />
+                    </IconButton>
+                </Stack>
+            </Stack>
 
-	// Calculate container position based on sidebar
-	const containerStyles = {
-		width: isSidebarOpen ? "calc(100% - 305px)" : "calc(100% - 230px)",
-		zIndex: 5,
-		px: 2,
-		py: 3,
-		backgroundColor: theme.palette.background.default,
-		borderRadius: 2,
-		boxShadow: theme.shadows[3],
-		mt: 6, // Add some margin top instead of fixed positioning
-		mb: 10, // Add margin bottom for spacing
-		marginLeft: isSidebarOpen ? "155px" : "145px",
-		transition: "all 0.3ms linear", // Changed from 0.3s to 0.5s linear
+            {/* Slider Row */}
+            <Box sx={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${slidesPerView}, 1fr)`,
+                gap: 2,
+                overflow: "hidden",
+            }}>
+                {visibleGames.map((game) => (
+                    <CardContainer key={game.id}>
+                        <ImageWrapper>
+                            <GameImage src={game.image} alt={game.title} />
+                            <Badge>B</Badge>
+                            <GameInfoOverlay>
+                                <Typography variant="subtitle1" sx={titleStyle}>
+                                    {game.title}
+                                </Typography>
+                                <Typography variant="caption" sx={providerStyle}>
+                                    {game.provider}
+                                </Typography>
+                            </GameInfoOverlay>
+                        </ImageWrapper>
 
-		[theme.breakpoints.down("sm")]: {
-			left: 0,
-			width: "100%",
-			px: 2,
-			py: 3,
-			top: "75vh",
-		},
-	};
+                        <Stack direction="row" alignItems="center" spacing={0.5} sx={{ px: 0.5 }}>
+                            <Box sx={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#00e701" }} />
+                            <Typography variant="caption" sx={{ color: "#b1bad3", fontWeight: 500 }}>
+                                {game.players} playing
+                            </Typography>
+                        </Stack>
+                    </CardContainer>
+                ))}
+            </Box>
+        </Box>
+    );
+};
 
-	return (
-		<Box sx={containerStyles}>
-			{/* Header with title and controls */}
-			<Stack
-				direction="row"
-				alignItems="center"
-				justifyContent="space-between"
-				sx={{ mb: 3 }}
-			>
-				<Stack direction="row" alignItems="center" spacing={1}>
-					<CasinoIcon sx={{ color: "primary.main", fontSize: 28 }} />
-					<Typography variant="h5" fontWeight="bold">
-						Popular Games
-					</Typography>
-					<Chip
-						label="64 Games"
-						size="small"
-						color="primary"
-						variant="outlined"
-						sx={{ ml: 1 }}
-					/>
-				</Stack>
+// --- Local Styles for Cleaner JSX ---
+const navButtonStyle = {
+    backgroundColor: "#2f4553",
+    color: "white",
+    borderRadius: 1,
+    width: 36,
+    height: 36,
+    "&:hover": { backgroundColor: "#3d5565" },
+    "&.Mui-disabled": { backgroundColor: "#1a2c38", color: "rgba(255,255,255,0.3)" },
+};
 
-				<Stack direction="row" spacing={1}>
-					<IconButton
-						onClick={handlePrev}
-						disabled={currentPage === 0}
-						sx={{
-							backgroundColor: alpha(theme.palette.primary.main, 0.1),
-							"&:hover": {
-								backgroundColor: alpha(theme.palette.primary.main, 0.2),
-							},
-							"&.Mui-disabled": {
-								backgroundColor: alpha(theme.palette.action.disabled, 0.1),
-							},
-						}}
-					>
-						<ChevronLeftIcon />
-					</IconButton>
+const titleStyle = {
+    color: "#fff",
+    fontWeight: 900,
+    lineHeight: 1.1,
+    textTransform: "uppercase",
+    textShadow: "1px 1px 3px rgba(0,0,0,0.8)",
+    fontSize: { xs: '0.7rem', md: '0.85rem' }
+};
 
-					<IconButton
-						onClick={handleNext}
-						disabled={currentPage === totalPages - 1}
-						sx={{
-							backgroundColor: alpha(theme.palette.primary.main, 0.1),
-							"&:hover": {
-								backgroundColor: alpha(theme.palette.primary.main, 0.2),
-							},
-							"&.Mui-disabled": {
-								backgroundColor: alpha(theme.palette.action.disabled, 0.1),
-							},
-						}}
-					>
-						<ChevronRightIcon />
-					</IconButton>
-
-					<Typography
-						variant="body2"
-						color="text.secondary"
-						sx={{ alignSelf: "center", ml: 1 }}
-					>
-						{currentPage + 1} / {totalPages}
-					</Typography>
-				</Stack>
-			</Stack>
-
-			{/* Games Slider */}
-			<Box
-				ref={sliderRef}
-				sx={{
-					display: "grid",
-					gridTemplateColumns: `repeat(${slidesPerView}, 1fr)`,
-					gap: 2,
-					overflow: "hidden",
-					flexShrink: 0,
-				}}
-			>
-				{visibleGames.map((game) => (
-					<Card
-						key={game.id}
-						sx={{
-							position: "relative",
-							borderRadius: 2,
-							overflow: "hidden",
-							transition: "all 0.3s ease",
-							cursor: "pointer",
-							"&:hover": {
-								transform: "translateY(-8px)",
-								boxShadow: theme.shadows[8],
-								"& .game-overlay": {
-									opacity: 1,
-								},
-							},
-						}}
-					>
-						{/* Game Image */}
-						<Box sx={{ position: "relative", height: isMobile ? 120 : 160 }}>
-							<CardMedia
-								component="img"
-								image={game.image}
-								alt={game.name}
-								sx={{
-									width: "100%",
-									height: "100%",
-									objectFit: "cover",
-								}}
-							/>
-
-							{/* Overlay on hover */}
-							<Box
-								className="game-overlay"
-								sx={{
-									position: "absolute",
-									top: 0,
-									left: 0,
-									right: 0,
-									bottom: 0,
-									background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
-									opacity: 0,
-									transition: "opacity 0.3s ease",
-									display: "flex",
-									alignItems: "flex-end",
-									p: 2,
-								}}
-							>
-								<Typography variant="body2" color="white" fontWeight="medium">
-									Play Now
-								</Typography>
-							</Box>
-
-							{/* Badges */}
-							<Stack
-								direction="row"
-								spacing={0.5}
-								sx={{
-									position: "absolute",
-									top: 8,
-									left: 8,
-								}}
-							>
-								{game.isNew && (
-									<Chip
-										label="NEW"
-										size="small"
-										color="success"
-										sx={{
-											height: 20,
-											fontSize: "0.65rem",
-											fontWeight: "bold",
-										}}
-									/>
-								)}
-								{game.isPopular && (
-									<Chip
-										label="HOT"
-										size="small"
-										color="error"
-										sx={{
-											height: 20,
-											fontSize: "0.65rem",
-											fontWeight: "bold",
-										}}
-									/>
-								)}
-							</Stack>
-
-							{/* Rating */}
-							{game.rating && (
-								<Chip
-									icon={<StarIcon sx={{ fontSize: "0.8rem !important" }} />}
-									label={game.rating}
-									size="small"
-									sx={{
-										position: "absolute",
-										top: 8,
-										right: 8,
-										backgroundColor: alpha(theme.palette.warning.main, 0.9),
-										color: "white",
-										height: 20,
-										fontSize: "0.7rem",
-										"& .MuiChip-icon": {
-											color: "white",
-											fontSize: "0.8rem",
-										},
-									}}
-								/>
-							)}
-						</Box>
-
-						{/* Game Info */}
-						<CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
-							<Typography variant="subtitle2" fontWeight="bold" noWrap>
-								{game.name}
-							</Typography>
-							<Typography
-								variant="caption"
-								color="text.secondary"
-								sx={{
-									display: "block",
-									whiteSpace: "nowrap",
-									overflow: "hidden",
-									textOverflow: "ellipsis",
-								}}
-							>
-								{game.provider}
-							</Typography>
-						</CardContent>
-					</Card>
-				))}
-			</Box>
-
-			{/* Dots indicator for mobile */}
-			{isMobile && (
-				<Stack
-					direction="row"
-					justifyContent="center"
-					spacing={1}
-					sx={{ mt: 3 }}
-				>
-					{Array.from({ length: totalPages }).map((_, index) => (
-						<Box
-							key={index}
-							onClick={() => setCurrentPage(index)}
-							sx={{
-								width: 8,
-								height: 8,
-								borderRadius: "50%",
-								backgroundColor:
-									currentPage === index
-										? theme.palette.primary.main
-										: alpha(theme.palette.primary.main, 0.3),
-								cursor: "pointer",
-								transition: "background-color 0.3s ease",
-								"&:hover": {
-									backgroundColor: alpha(theme.palette.primary.main, 0.7),
-								},
-							}}
-						/>
-					))}
-				</Stack>
-			)}
-		</Box>
-	);
+const providerStyle = {
+    color: "rgba(255,255,255,0.7)",
+    fontSize: "0.6rem",
+    fontWeight: 600,
+    mt: 0.5,
 };
 
 export default ImageSlider;
