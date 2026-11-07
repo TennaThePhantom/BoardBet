@@ -11,7 +11,7 @@ function App() {
 			<SideBar />
 
 			{/* Main content wrapper takes up the rest of the width */}
-			<div className="flex-1 flex flex-col min-w-0">
+			<div className="flex-1 flex flex-col space-y-6 min-w-0">
 				<Navbar />
 
 				<Routes>
