@@ -117,7 +117,7 @@ export default function BoardGameLeaderboard() {
 	};
 
 	return (
-		<div className="w-full max-w-7xl mx-auto p-4 md:p-6" data-theme="dim">
+		<div className="w-full max-w-7xl mx-auto p-4 md:p-6 bg-transparent" data-theme="dim" >
 			{/* Toggle Buttons Container */}
 			<div className="inline-flex bg-black/20 rounded-full p-1 mb-6">
 				<button
